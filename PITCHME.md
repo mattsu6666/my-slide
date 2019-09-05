@@ -29,6 +29,8 @@ def listOf[A](g: Gen[A]): SGen[List[A]] =
   SGen(n => g.listOfN(n))
 ```
 
+---
+
 ### Exercise 8.13 解
 - `SGen(n =>...)`のnは0から始まるので0の場合は1に置き換えればOK
 
@@ -47,7 +49,11 @@ Prop.run(maxProp)
 > + OK, passed 100 tests.
 ```
 
+---
+
 ### Exercise 8.14
+
+---
 
 ### Exercise 8.14 解
 
@@ -61,6 +67,8 @@ val sortedProp = forAll(listOf(smallInt)) { ns =>
 }
 Prop.run(sortedProp)
 ```
+
+---
 
 ### 8.4.2 並列処理のためのテストスイートの作成
 - 前章で並列処理において有効でなければならない法則を発見
@@ -78,6 +86,8 @@ val p1 = Prop.forAll(Gen.unit(Par.unit(1)))(i =>
   Par.map(i)(_ + 1)(ES).get == Par.unit(2)(ES).get)
 ```
 
+---
+
 ### プロパティの証明
 - forAllが汎用的すぎる
 - 今回のケースはハードコーディングされた例
@@ -91,6 +101,7 @@ def check(p: => Boolean): Prop = { // 非正格であることに注意
 ```
 
 ---
+
 ### 「ですが、どうもしっくりきません」
 - 値を1つ生成するだけのユニットジェネレータを定義しておきながら、Boolean値の評価を引き出すためにその値を無視しています
 - テストケースの数を無視するPropを生成するcheckを実装
@@ -100,6 +111,8 @@ def check(p: => Boolean): Prop = Prop { (_, _, _) =>
   if (p) Passed else Falsified("()", 0)
 }
 ```
+
+---
 
 ### 「forAllを使用するよりマシだが」
 - 相変わらず"passed 100 test"を出力
@@ -131,9 +144,15 @@ def run(p: Prop,
 
 - `&&`なども変更する必要がある。些細な変更
 
+---
+
 ### Exercise 8.15
 
+---
+
 ### Exercise 8.15 解
+
+---
 
 ### Parのテスト
 - `Par.map(Par.unit(1))(_ + 1)`が`Par.unit(2)`に等しいというプロパティの証明
@@ -145,6 +164,8 @@ val p2 = check {
   p(ES).get == p2(ES).get
 }
 ```
+
+---
 
 ### 「`p(ES)get`と`p2(ES).get`をどうにか」
 - かなり不満の残る部分
@@ -163,6 +184,8 @@ val p3 = check {
 }
 ```
 
+---
+
 ### 「ですがせっかくなので」
 - Parを2回実行する必要がなくなったが
 - Parの実行を別の関数forAllParへ移動するのはどうか
@@ -178,6 +201,8 @@ val S = weighted(
 def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
   forAll(S.map2(g)((_,_))) { case (s,a) => f(a)(s).get }
 ```
+
+---
 
 ### 「あまり手際の良い方法ではありません」
 - `S.map2(g)((_,_))`は２つのジェネレータを結合してそれらの出力をペアで生成するため、あまり手際の良い方法ではない
@@ -202,6 +227,8 @@ object ** {
 }
 ```
 
+---
+
 ### 完成
 - リファクタリングとクリーンアップはライブラリのユーザビリティを大きく向上させる可能性がある
 
@@ -222,6 +249,8 @@ val p2 = check {
   p(ES).get == p2(ES).get
 }
 ```
+
+---
 
 ### 他のパターン
 - 前章でテストケースを一般化したことを思い出す
@@ -246,6 +275,8 @@ val p4 =
 - このテストで十分、DoubleやStringで同じテストを生成してもあまり意味がない
 - mapに影響を与える可能性があるのは、並列処理の構造
 
+---
+
 ### Exercise 8.16
 - `Par[Int]`のより高度なジェネレータを記述せよ。入れ子のレベルが深い並列計算を生成する。
 
@@ -256,6 +287,8 @@ val pint = Gen.choose(0,10) map (Par.unit(_))
 val pint2: Gen[Par[Int]]
 ```
 
+---
+
 ### Exercise 8.16 解
 - 後で
 ```scala
@@ -264,12 +297,16 @@ val pint2: Gen[Par[Int]] = choose(-100,100).listOfN(choose(0,20)).map(l =>
     Par.fork { Par.map2(p, Par.unit(i))(_ + _) }))
 ```
 
+---
+
 ### Exercise 8.17
 - 第７章のforkに関するプロパティ `fork(x) == x`を実現せよ
 
 ```scala
 val forkProp = ???
 ```
+
+---
 
 ### Exercise 8.17 解
 - mapの場合と同様に解ける
@@ -278,10 +315,14 @@ val forkProp = ???
 val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
 ```
 
+---
+
 ### 8.5 高階関数のテストと今後の展望
 - 高階関数をテストするいい方法がない
 - Genでデータを生成できるが関数を生成できない
 - `s.takeWhile(f).forAll(f)`がtrueに評価されるプロパティを作りたい
+
+---
 
 ### Exercise 8.18
 - takeWhileが満たさなければならない他のプロパティを考えだせ。takeWhileとdropWhileの関係をうまく表すプロパティを考えつけるか
@@ -290,6 +331,8 @@ val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
 `s.takeWhile(f).forAll(f)` // これ以外に満たすべきプロパティ
 ```
 
+---
+
 ### Exercise 8.18 解
 - 他のプロパティ
   - 残りのリストは述語を満たしてない要素で始まるか
@@ -297,6 +340,8 @@ val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
 ```scala
 l.takeWhile(f) ++ l.dropWhile(f) == l
 ```
+
+---
 
 ### 特定の引数だけを調べる
 - 高階関数をテストするときに特定の引数だけを調べる方法もある
@@ -307,7 +352,11 @@ val isEven = (i: Int) => i%2 == 0
 val takeWhileProp = Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forAll(isEven))
 ```
 
+---
+
 ### 
+
+---
 
 ### Exercise 8.19
 ### Exercise 8.19 解
