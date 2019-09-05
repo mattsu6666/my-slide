@@ -378,6 +378,8 @@ def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
 ### Exercise 8.19 解
 - pass
 
+---
+
 ### Exercise 8.20
 - 本章で開発してきたライブラリを思い切って試してみる
 
