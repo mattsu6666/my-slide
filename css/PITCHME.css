@@ -1,1 +1,9 @@
+.headline {
+  font-size: 3em;
+}
 
+.byline {
+  color: gray;
+  font-size: 1em;
+  letter-spacing: 2px;
+}
