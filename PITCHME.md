@@ -1,8 +1,8 @@
 ### 前回のおさらい
-
-- Gen: 
-- Prop: 
-- SGen: 
+- プロパティベースのテストを可能にするためのライブラリの実装をした
+- Gen: ジェネレータ。乱数によってテストデータを生成する
+- Prop: プロパティ。Genと述語を組み合わせて生成する
+- SGen: 「サイズに基づく生成」ができるGen
 
 ---
 
@@ -52,6 +52,7 @@ Prop.run(maxProp)
 ---
 
 ### Exercise 8.14
+- List[Int]のソートなどに利用できるList.sortedの振る舞いを検証するためのプロパティを記述せよ
 
 ---
 
@@ -117,7 +118,6 @@ def check(p: => Boolean): Prop = Prop { (_, _, _) =>
 ### 「forAllを使用するよりマシだが」
 - 相変わらず"passed 100 test"を出力
 - 繰り返しテストしてもしても反証されないという意味であるとは言えない
-- どうやら新しい種類のResultが必要
 
 ```scala
 sealed trait Result
@@ -126,6 +126,8 @@ case class Falsified(failure: FailedCase,
     successes: SuccessCount) extends Result
 case object Proved extends Result
 ```
+
+--- 
 
 ```scala
 def run(p: Prop,
@@ -147,10 +149,12 @@ def run(p: Prop,
 ---
 
 ### Exercise 8.15
+- pass
 
 ---
 
 ### Exercise 8.15 解
+- pass
 
 ---
 
