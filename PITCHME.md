@@ -328,7 +328,7 @@ val forkProp = Prop.forAllPar(pint2)(i => equal(Par.fork(i), i)) tag "fork"
 - takeWhileが満たさなければならない他のプロパティを考えだせ。takeWhileとdropWhileの関係をうまく表すプロパティを考えつけるか
 
 ```scala
-`s.takeWhile(f).forAll(f)` // これ以外に満たすべきプロパティ
+`s.takeWhile(f).froall(f)` // これ以外に満たすべきプロパティ
 ```
 
 ---
@@ -349,7 +349,7 @@ l.takeWhile(f) ++ l.dropWhile(f) == l
 
 ```scala
 val isEven = (i: Int) => i%2 == 0
-val takeWhileProp = Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forAll(isEven))
+val takeWhileProp = Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forall(isEven))
 ```
 
 ---
@@ -366,9 +366,26 @@ def genStringIntFn(g: Gen[Int]): Gen[String => Int] =
 ---
 
 ### Exercise 8.19
+- pass
 ### Exercise 8.19 解
+- pass
+
 ### Exercise 8.20
+- 本章で開発してきたライブラリを思い切って試してみる
+
 ### Exercise 8.20 解
+- take, dropだけやってみた
+
+```scala
+val takeProp = Prop.forAll(Gen.listOf(Gen.choose(0,100))) { ns =>
+  ns.take(ns.size).size == ns.size && ns.take(10).size <= 10
+}
+Prop.run(takeProp)
+val dropProp = Prop.forAll(Gen.listOf(Gen.choose(0,100))) { ns =>
+  ns.drop(ns.size).size == ns.size - ns.take(ns.size).size
+}
+Prop.run(dropProp)
+```
 
 ### 8.6 ジェネレータの法則
 - Genに実装してきた関数はこれまで実装してきたPar, List, Stream, Optionは関数と似ている
