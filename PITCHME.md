@@ -354,7 +354,14 @@ val takeWhileProp = Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forA
 
 ---
 
-### 
+### Gen[String => Int]を生成
+- Stringの入力を無視し、Gen[Int]にデリゲートするString => Int関数を生成する
+- しかし定数関数を生成しているだけ
+
+```scala
+def genStringIntFn(g: Gen[Int]): Gen[String => Int] = 
+  g map (i => (s => i))
+```
 
 ---
 
@@ -362,8 +369,11 @@ val takeWhileProp = Prop.forAll(Gen.listOf(int))(ns => ns.takeWhile(isEven).forA
 ### Exercise 8.19 解
 ### Exercise 8.20
 ### Exercise 8.20 解
+
 ### 8.6 ジェネレータの法則
+- Genに実装してきた関数はこれまで実装してきたPar, List, Stream, Optionは関数と似ている
+- 関数が同じようなシグネチャを共有しているだけなのか、それとも同じ法則を満たしているのか
+- 何か大きな力が働いている
 
 ### 8.l7 まとめ
-
-### おわり
+- 
