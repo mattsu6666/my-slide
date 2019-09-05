@@ -1,9 +1,9 @@
 .headline {
-  font-size: 3em;
+  font-size: 1em;
 }
 
 .byline {
   color: gray;
-  font-size: 1em;
+  font-size: 0.5em;
   letter-spacing: 2px;
 }
